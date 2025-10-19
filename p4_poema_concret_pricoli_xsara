@@ -1,0 +1,63 @@
+PFont myfont;
+String onomatopeia = "psssh";
+int repeticiones = 12;
+
+void setup(){
+  size (595, 879); 
+  myfont = createFont("B.S.-Mono-Regular.otf", 10); 
+  frameRate(1); 
+}
+
+void draw (){
+  background(255);
+  fill(0);
+  textFont(myfont);
+  textSize(10);
+  
+  int x_centro = width / 2;
+  int y_alcachofa = 150;
+  char char_base = onomatopeia.charAt(0);
+
+//manguera
+  float espaciado_y = 12;
+    for (float posy = 10; posy < y_alcachofa - 15; posy = posy + espaciado_y){
+    text(char_base, x_centro, posy);
+  }
+
+//alcachofa
+  int num_puntos = 80;
+  float radio_horizontal = 100;
+  float radio_vertical = 20;
+  float circulo = 360; 
+  
+  for (int pto = 0; pto < num_puntos; pto = pto + 1){
+    float angulo = radians(circulo / num_puntos * pto);
+    
+    float posx = x_centro + radio_horizontal * cos(angulo);
+    float posy = y_alcachofa + radio_vertical * sin(angulo);
+    
+    text(char_base, posx, posy);
+  }
+
+//chorros agua
+  int longitud_palabra = onomatopeia.length();
+  int num_chorros = 20; 
+  float espaciado_caracter = 12;
+
+  for (int vara = 0; vara < num_chorros; vara = vara + 1){
+    
+    float x_chorro = x_centro + random(-100, 100); 
+    float y_var_inicio = (y_alcachofa + 20) + random(0, 30); 
+    int longitud_vara = (int)random(repeticiones * 0.7, repeticiones * 1.5); 
+    for (int repe = 0; repe < longitud_vara; repe = repe + 1){
+      for (int car = 0; car < longitud_palabra; car = car + 1){
+        char caracter = onomatopeia.charAt(car);
+        float y_total = y_var_inicio + (repe * longitud_palabra * espaciado_caracter) + (car * espaciado_caracter); 
+        
+        if (y_total < height - 30) {
+          text(caracter, x_chorro, y_total); 
+        }
+      }
+    }
+  }
+}
