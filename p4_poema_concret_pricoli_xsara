@@ -1,6 +1,9 @@
+import processing.pdf.*;
+
 PFont myfont;
 String onomatopeia = "psssh";
-int repeticiones = 12;
+int num_psssh= 12;
+boolean record = false;
 
 void setup(){
   size (595, 879); 
@@ -9,55 +12,60 @@ void setup(){
 }
 
 void draw (){
+    if (record) {
+    beginRecord(PDF, "frame-####.pdf");
+  }
   background(255);
   fill(0);
   textFont(myfont);
   textSize(10);
   
-  int x_centro = width / 2;
-  int y_alcachofa = 150;
-  char char_base = onomatopeia.charAt(0);
-
 //manguera
-  float espaciado_y = 12;
-    for (float posy = 10; posy < y_alcachofa - 15; posy = posy + espaciado_y){
-    text(char_base, x_centro, posy);
+  for (int y=10; y < 150 - 15; y = y + 10){
+    text(onomatopeia.charAt(0), 295, y);
   }
 
 //alcachofa
-  int num_puntos = 80;
-  float radio_horizontal = 100;
-  float radio_vertical = 20;
+  float radio_x = 100;
+  float radio_y = 20;
   float circulo = 360; 
   
-  for (int pto = 0; pto < num_puntos; pto = pto + 1){
-    float angulo = radians(circulo / num_puntos * pto);
+  for (int p = 0; p < 80; p = p + 1){
+    float angulo = radians(circulo / 80 * p);
+    float posx = 295 + radio_x * cos(angulo);
+    float posy = 150 + radio_y * sin(angulo);
     
-    float posx = x_centro + radio_horizontal * cos(angulo);
-    float posy = y_alcachofa + radio_vertical * sin(angulo);
-    
-    text(char_base, posx, posy);
+    text(onomatopeia.charAt(0), posx, posy);
   }
 
-//chorros agua
-  int longitud_palabra = onomatopeia.length();
+//chorros
   int num_chorros = 20; 
-  float espaciado_caracter = 12;
+  float espaciado_o = 10;
 
-  for (int vara = 0; vara < num_chorros; vara = vara + 1){
+  for (int chorro = 0; chorro < num_chorros; chorro = chorro + 1){
     
-    float x_chorro = x_centro + random(-100, 100); 
-    float y_var_inicio = (y_alcachofa + 20) + random(0, 30); 
-    int longitud_vara = (int)random(repeticiones * 0.7, repeticiones * 1.5); 
-    for (int repe = 0; repe < longitud_vara; repe = repe + 1){
-      for (int car = 0; car < longitud_palabra; car = car + 1){
-        char caracter = onomatopeia.charAt(car);
-        float y_total = y_var_inicio + (repe * longitud_palabra * espaciado_caracter) + (car * espaciado_caracter); 
+    float x_chorro = 295 + random(-100, 100); 
+    float y_chorro = (150 + 20) + random(0, 30);
+    int long_chorro = (int)random(num_psssh, num_psssh*4);
+    
+    for (int repe = 0; repe < long_chorro; repe = repe + 1){
+      for (int o = 0; o < onomatopeia.length(); o = o + 1){
+        char caracter = onomatopeia.charAt(o);
+        float y_total = y_chorro + (repe * onomatopeia.length() * espaciado_o) + (o * espaciado_o);
         
-        if (y_total < height - 30) {
+        if (y_total < height + 50){
           text(caracter, x_chorro, y_total); 
         }
       }
     }
   }
+
+  if (record) {
+    endRecord();
+    record = false;
+  }
+}
+
+void mousePressed(){
+  record = true;
 }
